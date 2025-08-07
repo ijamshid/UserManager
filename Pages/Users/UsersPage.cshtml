@@ -1,0 +1,79 @@
+﻿@page
+@model UserManager.Presentation.Pages.Users.UsersPageModel
+@using UserManager.Domain.Enums
+
+<div class="container mt-4">
+    <h2>User List</h2>
+
+    <form method="post">
+        <div class="d-flex mb-3 gap-2">
+            <button type="submit" asp-page-handler="BlockSelected">Block</button>
+            <button type="submit" asp-page-handler="UnblockSelected">Unblock</button>
+            <button type="submit" asp-page-handler="DeleteSelected">Delete</button>
+            <input type="text" class="form-control w-25 ms-auto" placeholder="Filter" />
+        </div>
+
+        <table class="table table-hover align-middle text-center">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll" /></th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Last seen</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users.OrderByDescending(u => u.LastLoginDate))
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="selectedUserIds" value="@user.Id" class="user-checkbox" />
+                        </td>
+                        <td>
+                            <div class="@(user.Status == Status.Blocked ? "blocked-name" : "")">
+                                @user.FirstName @user.LastName
+                            </div>
+                            <div class="text-muted small">@user.Username</div>
+                        </td>
+                        <td>@user.Email</td>
+                        <td title="@(user.LastLoginDate?.ToString("yyyy-MM-dd HH:mm:ss") ?? "-")">
+                            @{
+                                if (user.LastLoginDate.HasValue)
+                                {
+                                    var ts = DateTime.UtcNow - user.LastLoginDate.Value.ToUniversalTime();
+                                    string rel = ts.TotalSeconds < 60 ? "just now"
+                                    : ts.TotalMinutes < 60 ? $"{(int)ts.TotalMinutes} minutes ago"
+                                    : ts.TotalHours < 24 ? $"{(int)ts.TotalHours} hours ago"
+                                    : ts.TotalDays < 30 ? $"{(int)ts.TotalDays} days ago"
+                                    : ts.TotalDays < 365 ? $"{(int)(ts.TotalDays / 30)} months ago"
+                                    : $"{(int)(ts.TotalDays / 365)} years ago";
+                                    @rel
+                                }
+                                else
+                                {
+                                    @("-")
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<style>
+    .blocked-name {
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.getElementById("selectAll").addEventListener("change", function() {
+            document.querySelectorAll(".user-checkbox")
+                .forEach(cb => cb.checked = this.checked);
+        });
+    </script>
+}

@@ -1,0 +1,47 @@
+﻿body, html {
+    height: 100%;
+    margin: 0;
+}
+
+.bg-image {
+    background: linear-gradient(135deg, #4e54c8, #8f94fb);
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+}
+
+.form-control:focus {
+    box-shadow: none;
+}
+
+.form-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.form-box {
+    max-width: 400px;
+    width: 100%;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #0056d2;
+}
+
+.text-small {
+    font-size: 0.9rem;
+}
+
+.input-group-text {
+    background-color: transparent;
+    border-left: none;
+}
+
+.input-group .form-control {
+    border-right: none;
+}
